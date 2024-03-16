@@ -11,6 +11,8 @@ This repository contains the source code for a RESTful API backend for a booksto
 - Search and filter functionality for books
 - Apply discount vouchers to orders
 - Pagination and sorting for book listings
+- Redis caching for improved performance
+- OAuth integration for authentication
 - ...
 
 ## Technologies Used
@@ -19,7 +21,7 @@ This repository contains the source code for a RESTful API backend for a booksto
 - Spring Security
 - JWT (JSON Web Tokens) for authentication
 - Redis for caching
-- OAuth for authentication (optional, if applicable)
+- OAuth for authentication
 - Spring Data JPA for database access
 - MySQL database
 - Maven for dependency management
