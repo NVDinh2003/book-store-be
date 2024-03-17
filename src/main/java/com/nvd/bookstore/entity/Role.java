@@ -23,8 +23,12 @@ public class Role {
     @ManyToMany(mappedBy = "roles") //map theo ten list role ở User entity
     private List<User> users = new ArrayList<>();
 
-//    public Role(String name) {
-//        super();
-//        this.name = name;
-//    }
+    public Role(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

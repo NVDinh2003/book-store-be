@@ -9,14 +9,25 @@ import com.nvd.bookstore.untils.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> userEntity = userRepository.findByEmail(email);
+        if (userEntity.isEmpty())
+            throw new ResourceNotFoundException(AppConstant.USER_NOT_FOUND + email);
+        return userEntity.get();
+    }
 
     public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
@@ -68,4 +79,9 @@ public class UserService {
             throw new ResourceNotFoundException(AppConstant.USER_NOT_FOUND + userId);
         }
     }
+
+
+//    private Collection<GrantedAuthority> mapRolesToAuthorities(List<Role> roles) {
+//        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+//    }
 }

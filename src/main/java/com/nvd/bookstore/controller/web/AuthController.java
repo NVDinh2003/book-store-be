@@ -1,7 +1,7 @@
 package com.nvd.bookstore.controller.web;
 
-import com.nvd.bookstore.config.AuthenticationService;
-import com.nvd.bookstore.payload.request.LoginRequest;
+import com.nvd.bookstore.config.service.AuthenticationService;
+import com.nvd.bookstore.payload.request.AuthenticationRequest;
 import com.nvd.bookstore.payload.request.RegisterRequest;
 import com.nvd.bookstore.payload.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,8 @@ public class AuthController {
         return ResponseEntity.ok(service.register(request));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(service.login(request));
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(service.authenticate(request));
     }
 }

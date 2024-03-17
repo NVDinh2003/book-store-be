@@ -5,14 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -22,8 +21,10 @@ public class SecurityConfig {
 
     private final JWTAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+//    private final LogoutHandler logoutHandler;
 
     String[] allowURL = {
+            "/api/auth/**",
             "/api/products/**",
             "/api/categories/**",
             "/api/publishers/**",
@@ -33,36 +34,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(authorizeRequests ->
-//                        authorizeRequests
-//                                .requestMatchers("/api/auth/**").permitAll()
-//                                .requestMatchers(allowURL).permitAll()
-//                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-//                                .anyRequest().permitAll()
-//
-//                )
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .formLogin(withDefaults())
-//                .httpBasic(withDefaults());
-
         http
                 .csrf(AbstractHttpConfigurer::disable)   // tắt chức năng bảo vệ CSRF (Cross-Site Request Forgery).
                 .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers(allowURL).permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
+                                authorizeRequests
+                                        .requestMatchers(allowURL).permitAll()
+                                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+
+                                        .anyRequest().authenticated()
                 )
                 // Quản lý session, không tạo session và chỉ sử dụng các session đã tồn tại (nếu có).
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider) // dùng authenticationProvider để xác thực yêu cầu
                 // Thêm một bộ lọc JWT trước UsernamePasswordAuthenticationFilter.
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(withDefaults())
-                .httpBasic(withDefaults());
+//                .logout((logout) -> logout
+//                        .logoutUrl("/api/auth/logout")
+//                        .addLogoutHandler(logoutHandler)
+//                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+//                )
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 

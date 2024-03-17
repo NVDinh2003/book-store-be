@@ -3,6 +3,7 @@ package com.nvd.bookstore.payload.request;
 import com.nvd.bookstore.entity.Role;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,7 +16,7 @@ public class UserRequest {
     private String password;
     private String phone;
     private Boolean status;
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     public UserRequest(String address, String avatar, String email,
                        String fullName, String password, String phone) {

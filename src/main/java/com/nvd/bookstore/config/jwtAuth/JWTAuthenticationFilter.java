@@ -1,5 +1,6 @@
 package com.nvd.bookstore.config.jwtAuth;
 
+import com.nvd.bookstore.config.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -49,12 +53,17 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractUsername(jwt);    // extract the userEmail from JWT token;
 
 //      xác thực userEmail lấy từ JWT token
+        /*
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 //                      userDetails lấy từ DataBase
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
 //          Check token có hợp lệ với người dùng không
             if (jwtService.isTokenValid(jwt, userDetails)) {
+                List<String> roles = jwtService.extractClaim(jwt, (Claims claims) -> claims.get("roles", List.class));
+                List<SimpleGrantedAuthority> authorities = roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
 //      UsernamePasswordAuthenticationToken: chứa thông tin login (username, pass, quyền,..) của user
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,    // chi tiết user
@@ -69,6 +78,27 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }   // END-check token
         } // END-xác thực email từ jwt
+
+         */
+
+        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                List<SimpleGrantedAuthority> grantedAuthorities = userDetails.getAuthorities().stream()
+                        .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
+                        .collect(Collectors.toList());
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        grantedAuthorities
+                );
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
 
 //      thực hiện filter với request và respon hiện tại, nếu tất cả Filter được xử lý xong, yêu cầu sẽ được chuyển đến controller để xử lý
         filterChain.doFilter(request, response);

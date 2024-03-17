@@ -1,4 +1,4 @@
-package com.nvd.bookstore.config.jwtAuth;
+package com.nvd.bookstore.config.service;
 
 
 import io.jsonwebtoken.Claims;
@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service        // extract claim: trích xuất nội dung của thông tin (claim).
 public class JwtService {
@@ -30,8 +32,15 @@ public class JwtService {
 
     //   Map: K-V - extraClaims có thể chứa infors như roles, expiryDate token, vv. Giúp cho xác thực và xử lý token trở nên dễ dàng hơn.
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+//        List<String> roleNames = userDetails.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+//        claim.put("roles", roleNames);
         return Jwts.builder()   // tạo builder xây dựng 1 token JWT mới.
                 .setClaims(extraClaims)    // thêm các trường bổ sung cho token
+                .claim("roles", userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()))
                 .setSubject(userDetails.getUsername())  // add username vào token
                 .setIssuedAt(new Date(System.currentTimeMillis()))      // time tạo token
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
