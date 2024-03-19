@@ -6,6 +6,8 @@ public class AppConstant {
     public static final String PUBLISHER_NOT_FOUND = "Not found publisher with id: ";
     public static final String USER_NOT_FOUND = "Not found user with username: ";
     public static final String VOUCHER_NOT_FOUND = "Not found voucher with code or id: ";
+
+    public static final String VOUCHER_NOT_VALID = "Not valid voucher with code or id: ";
     public static final String USER_ID_NOT_FOUND = "Not found user with username: ";
     public static final String CART_NOT_FOUND = "Not found cart with id: ";
     public static final String CART_ITEM_NOT_FOUND = "Not found cart item with id: ";

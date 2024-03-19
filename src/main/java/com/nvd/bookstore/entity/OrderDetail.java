@@ -20,7 +20,7 @@ public class OrderDetail {
 
     //------------ Mapped Column -----------//
     // Product
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     private Product product;
 

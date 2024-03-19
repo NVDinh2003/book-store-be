@@ -50,7 +50,7 @@ public class VoucherController {
 
     @GetMapping("/check/{code}")
     public ResponseEntity<Boolean> checkVoucher(@PathVariable("code") String code) {
-        return ResponseEntity.ok(voucherService.checkVoucher(code));
+        return ResponseEntity.ok(voucherService.checkVoucherByCode(code));
     }
 
 }

@@ -34,7 +34,7 @@ public class VoucherService {
     }
 
     public Voucher getVoucherByCode(String code) {
-        Voucher voucher = voucherRepository.findByCode(code);
+        Voucher voucher = voucherRepository.findByCode(code).get();
         if (voucher != null) {
             return voucher;
         } else throw new ResourceNotFoundException(AppConstant.VOUCHER_NOT_FOUND + code);
@@ -48,11 +48,17 @@ public class VoucherService {
         return voucherRepository.findByStatus(false);
     }
 
-    public boolean checkVoucher(String code) {
-        Voucher voucher = voucherRepository.findByCode(code);
+    public boolean checkVoucherByCode(String code) {
+        Optional<Voucher> voucher = voucherRepository.findByCode(code);
+        if (voucher.isPresent()) {
+            return voucher.get().isStatus() && voucher.get().getExpiredDate().before(new Date());
+        } else throw new ResourceNotFoundException(AppConstant.VOUCHER_NOT_FOUND + code);
+    }
+
+    public boolean checkVoucher(Voucher voucher) {
         if (voucher != null) {
             return voucher.isStatus() && voucher.getExpiredDate().before(new Date());
-        } else throw new ResourceNotFoundException(AppConstant.VOUCHER_NOT_FOUND + code);
+        } else throw new ResourceNotFoundException(AppConstant.VOUCHER_NOT_FOUND);
     }
 
 //    public Voucher searchVoucher(String code) {

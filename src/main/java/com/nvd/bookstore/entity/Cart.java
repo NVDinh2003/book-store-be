@@ -16,7 +16,7 @@ public class Cart {
     @Column(name = "cart_id", nullable = false)
     private Long id;
     //    private Float totalPrice = 0.0F;
-    private int quantity = 0;
+    private int quantity = 1;
 
     //------------ Mapped Column -----------//
     @ManyToOne

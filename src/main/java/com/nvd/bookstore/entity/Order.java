@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -19,9 +20,11 @@ public class Order {
     @Column(name = "order_id", nullable = false)
     private Long id;
     private Float grandTotal;
+    @CreationTimestamp
     private Date orderDate;
     private String orderStatus;
     private String paymentMethod;
+    private String shippingAddress;
     private Float shippingTotal;
 
 

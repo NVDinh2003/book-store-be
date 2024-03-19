@@ -41,7 +41,6 @@ public class SecurityConfig {
                                         .requestMatchers(allowURL).permitAll()
                                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 //                                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-
                                         .anyRequest().authenticated()
                 )
                 // Quản lý session, không tạo session và chỉ sử dụng các session đã tồn tại (nếu có).
