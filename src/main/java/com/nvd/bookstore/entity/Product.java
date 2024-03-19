@@ -62,6 +62,16 @@ public class Product {
     @JsonIgnore
     private Publisher publisher;
 
+    public String getImage1() {
+        return "/static/images/products/1/" + image1;
+    }
 
+    public String getImage2() {
+        return "/static/images/products/2/" + image1;
+    }
+
+    public String getImage3() {
+        return "/static/images/products/3/" + image1;
+    }
     //--------------------------------------//
 }

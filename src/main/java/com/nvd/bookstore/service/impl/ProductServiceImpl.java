@@ -16,10 +16,20 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -145,5 +155,33 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> top10LatestBooks() {
         return productRepository.findTop10ByOrderByYearOfPublicationDesc();
+    }
+
+    @Override
+    public ResponseEntity<String> uploadImages(MultipartFile image1, MultipartFile image2, MultipartFile image3) {
+        try {
+            if (!image1.isEmpty()) {
+                String fileName1 = StringUtils.cleanPath(Objects.requireNonNull(image1.getOriginalFilename()));
+                Path path1 = Paths.get("src/main/resources/static/images/products/1" + fileName1);
+                Files.copy(image1.getInputStream(), path1, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            if (!image2.isEmpty()) {
+                String fileName2 = StringUtils.cleanPath(Objects.requireNonNull(image2.getOriginalFilename()));
+                Path path2 = Paths.get("src/main/resources/static/images/products/2" + fileName2);
+                Files.copy(image2.getInputStream(), path2, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            if (!image3.isEmpty()) {
+                String fileName3 = StringUtils.cleanPath(Objects.requireNonNull(image3.getOriginalFilename()));
+                Path path3 = Paths.get("src/main/resources/static/images/products/3" + fileName3);
+                Files.copy(image3.getInputStream(), path3, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            return ResponseEntity.ok().body("Images uploaded successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images.");
+        }
     }
 }

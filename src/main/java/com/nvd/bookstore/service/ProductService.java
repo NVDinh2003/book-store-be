@@ -4,6 +4,8 @@ import com.nvd.bookstore.entity.Product;
 import com.nvd.bookstore.payload.request.ProductRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,4 +31,5 @@ public interface ProductService {
     List<Product> top10LatestBooks();
 
 
+    ResponseEntity<String> uploadImages(MultipartFile image1, MultipartFile image2, MultipartFile image3);
 }

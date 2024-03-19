@@ -198,6 +198,7 @@ CREATE TABLE `orders` (
   `order_date` datetime DEFAULT NULL,
   `order_status` varchar(50) DEFAULT NULL,
   `payment_method` varchar(50) DEFAULT NULL,
+  `shipping_address` varchar(255) DEFAULT NULL,
   `shipping_total` float DEFAULT '0',
   `grand_total` float DEFAULT NULL,
   PRIMARY KEY (`order_id`),
@@ -332,8 +333,37 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'USER'),(2,'ADMIN');
+INSERT INTO `role` VALUES (1,'ROLE_USER'),(2,'ROLE_ADMIN');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `token`
+--
+
+DROP TABLE IF EXISTS `token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `token` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `token_type` varchar(50) DEFAULT NULL,
+  `revoked` tinyint(1) DEFAULT '0',
+  `expired` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_token` (`user_id`,`token`),
+  CONSTRAINT `fk_user_token_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `token`
+--
+
+LOCK TABLES `token` WRITE;
+/*!40000 ALTER TABLE `token` DISABLE KEYS */;
+/*!40000 ALTER TABLE `token` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -354,6 +384,8 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `status` tinyint(1) DEFAULT NULL,
+  `facebook_id` varchar(225) DEFAULT NULL,
+  `google_id` varchar(225) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -364,7 +396,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,NULL,NULL,'2024-02-26 08:54:50','2024-03-14 19:03:13','iamdinhhtvq@gmail.com','Nguyễn Văn Định','$2a$10$uyOeEDi4UuRxyT5zQPoeCeu64QnO8.PEbkYZL40sGHSSnMpcb4QIi','0386264423',1),(3,NULL,NULL,'2024-03-14 18:43:56','2024-03-14 18:43:56','test@gmail.com','EnViDi','$2a$10$uyOeEDi4UuRxyT5zQPoeCeu64QnO8.PEbkYZL40sGHSSnMpcb4QIi','0123456789',1);
+INSERT INTO `user` VALUES (1,NULL,NULL,'2024-02-26 08:54:50','2024-03-14 19:03:13','iamdinhhtvq@gmail.com','Nguyễn Văn Định','$2a$10$uyOeEDi4UuRxyT5zQPoeCeu64QnO8.PEbkYZL40sGHSSnMpcb4QIi','0386264423',1,NULL,NULL),(3,NULL,NULL,'2024-03-14 18:43:56','2024-03-14 18:43:56','test@gmail.com','EnViDi','$2a$10$uyOeEDi4UuRxyT5zQPoeCeu64QnO8.PEbkYZL40sGHSSnMpcb4QIi','0123456789',1,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +412,7 @@ CREATE TABLE `user_role` (
   `role_id` bigint NOT NULL,
   KEY `FKt4v0rrweyk393bdgt107vdx0x` (`role_id`),
   KEY `FKgd3iendaoyh04b95ykqise6qh` (`user_id`),
-  CONSTRAINT `FKgd3iendaoyh04b95ykqise6qh` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FKgd3iendaoyh04b95ykqise6qh` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
   CONSTRAINT `FKt4v0rrweyk393bdgt107vdx0x` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -464,4 +496,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-14 19:05:15
+-- Dump completed on 2024-03-19 17:16:39

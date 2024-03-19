@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -61,7 +62,13 @@ public class ProductController {
         return new ResponseEntity<>(productService.top10LatestBooks(), HttpStatus.OK);
     }
 
+    @PostMapping("/upload-images")
+    public ResponseEntity<String> uploadImages(@RequestParam("image_posted1") MultipartFile image1,
+                                               @RequestParam("image_posted2") MultipartFile image2,
+                                               @RequestParam("image_posted3") MultipartFile image3) {
+        return productService.uploadImages(image1, image2, image3);
 
+    }
 //    @PostMapping("/test-request")
 //    public ResponseEntity<String> testPostRequest() {
 //        return ResponseEntity.ok("POST request successful");
