@@ -384,8 +384,9 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `status` tinyint(1) DEFAULT NULL,
-  `facebook_id` varchar(225) DEFAULT NULL,
-  `google_id` varchar(225) DEFAULT NULL,
+  `provider_id` varchar(50) DEFAULT NULL,
+--   `facebook_id` varchar(225) DEFAULT NULL,
+--   `google_id` varchar(225) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;

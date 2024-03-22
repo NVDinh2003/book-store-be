@@ -41,9 +41,13 @@ public class User implements UserDetails {
     private String phone;
     private Boolean status;
 
+    //    private String facebook_id;
+    //    private String google_id;
+    private String providerId;
+
     //------------ Mapped Column -----------//
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Role.class)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH, targetEntity = Role.class)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),

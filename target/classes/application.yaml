@@ -1,0 +1,46 @@
+#spring:
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/book-store
+#    username: root
+#    password: dinhhtvq123
+#  jpa:
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLDialect
+#        format_sql: true
+#    hibernate:
+#      ddl-auto: update
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          github:
+#            client-id: Iv1.4834cdecf3f41f28
+#            client-secret: f988a7d2e936fa40be0de04af79ca76254f85f2f
+#            scope:
+#              - user:email
+#              - read:user
+#          google:
+#            client-id: 1063484786277-e3o4hdlkb5fgvtqci6qiv1lvacegjkg0.apps.googleusercontent.com
+#            client-secret: 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
+#            scope:
+#              - email
+#              - profile
+#          facebook:
+#            client-id: 944267580208490
+#            client-secret: ee2ac3c48d5e87fcc85141d86b54348b
+#            scope:
+#              - email
+#              - public_profile
+#  servlet:
+#    multipart:
+#      enabled: true
+#      file-size-threshold: 2KB
+#      max-file-size: 20MB
+#      max-request-size: 20MB
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        web:
+#          cors: DEBUG

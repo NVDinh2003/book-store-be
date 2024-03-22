@@ -1,6 +1,7 @@
 package com.nvd.bookstore.config.service;
 
 
+import com.nvd.bookstore.entity.Provider;
 import com.nvd.bookstore.entity.Role;
 import com.nvd.bookstore.entity.User;
 import com.nvd.bookstore.payload.request.AuthenticationRequest;
@@ -49,6 +50,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
                 .phone(request.getPhone())
+                .providerId(Provider.local.name())
                 .status(true)
                 .build();
 

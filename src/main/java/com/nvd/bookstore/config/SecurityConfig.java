@@ -1,6 +1,8 @@
 package com.nvd.bookstore.config;
 
 import com.nvd.bookstore.config.jwtAuth.JWTAuthenticationFilter;
+import com.nvd.bookstore.service.oauth2.security.CustomOAuth2UserDetailService;
+import com.nvd.bookstore.service.oauth2.security.handler.CustomOAuth2FailureHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +15,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
+    private final CustomOAuth2UserDetailService customOAuth2UserDetailService;
+    private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
     private final JWTAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 //    private final LogoutHandler logoutHandler;
@@ -44,7 +48,8 @@ public class SecurityConfig {
                                         .anyRequest().authenticated()
                 )
                 // Quản lý session, không tạo session và chỉ sử dụng các session đã tồn tại (nếu có).
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authenticationProvider(authenticationProvider) // dùng authenticationProvider để xác thực yêu cầu
                 // Thêm một bộ lọc JWT trước UsernamePasswordAuthenticationFilter.
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -53,9 +58,30 @@ public class SecurityConfig {
 //                        .addLogoutHandler(logoutHandler)
 //                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
 //                )
+//                .oauth2Login(oauth2Login -> oauth2Login
+//                        .defaultSuccessUrl("/user", true))
+//                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint()
+                        .userService(customOAuth2UserDetailService)
+                        .and().failureHandler(customOAuth2FailureHandler)
+                )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
+
     }
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(List.of("*"));
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+//        configuration.setExposedHeaders(List.of("x-auth-token"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
     /*
                               CSRF()
